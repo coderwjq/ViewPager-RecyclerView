@@ -6,7 +6,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,19 +14,22 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements HomePageManager.OnModeChangeListener {
     private static final String TAG = "MainActivity";
 
     private HomeRecyclerView mRvHomePage;
     private HomePageAdapter mHomePageAdapter;
     private TabLayout mTlNewsTitle;
     private LinearLayout mLlMenuBar;
+    private Button mBtnBackHome;
+    private LinearLayoutManager mLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,12 +39,38 @@ public class MainActivity extends AppCompatActivity {
         mRvHomePage = findViewById(R.id.rv_home_page);
         mTlNewsTitle = findViewById(R.id.tl_news_title);
         mLlMenuBar = findViewById(R.id.ll_menu_bar);
+        mBtnBackHome = findViewById(R.id.btn_back_home);
 
         mHomePageAdapter = new HomePageAdapter();
-
-        mRvHomePage.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mRvHomePage.setLayoutManager(mLayoutManager);
         mRvHomePage.setAdapter(mHomePageAdapter);
         mRvHomePage.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+
+        mBtnBackHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HomePageManager.getInstance().setNormalMode();
+
+                if (mLayoutManager.findFirstCompletelyVisibleItemPosition() != 0) {
+                    Log.i(TAG, "smoothScrollToPosition: 0");
+                    mRvHomePage.smoothScrollToPosition(0);
+                }
+            }
+        });
+
+        HomePageManager.getInstance().attatchModeChangeListener(this);
+    }
+
+    @Override
+    public void refreshMode(int currentMode) {
+        if (currentMode == HomePageManager.HOME_PAGE_MODE_NORMAL) {
+            mTlNewsTitle.setVisibility(View.INVISIBLE);
+        } else if (currentMode == HomePageManager.HOME_PAGE_MODE_NEWS) {
+            mTlNewsTitle.setVisibility(View.VISIBLE);
+        } else {
+            // 其他状态
+        }
     }
 
     class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -89,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
                 // 设置ViewPager高度
                 ViewGroup.LayoutParams layoutParams = holder.mVpContainer.getLayoutParams();
                 layoutParams.height = dm.heightPixels - mLlMenuBar.getHeight() - mTlNewsTitle.getHeight() - statusBar;
-                holder.mVpContainer.setLayoutParams(layoutParams);
             }
         }
 
@@ -119,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
 
         class NewsViewHolder extends RecyclerView.ViewHolder {
 
-            private final ViewPager mVpContainer;
+            private final NewsViewPager mVpContainer;
 
             public NewsViewHolder(View itemView) {
                 super(itemView);

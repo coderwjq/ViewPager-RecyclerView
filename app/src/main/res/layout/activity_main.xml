@@ -23,21 +23,23 @@
             android:layout_height="wrap_content"
             android:background="@android:color/white"
             android:visibility="invisible"
-            app:tabIndicatorColor="@android:color/holo_orange_light"
-            app:tabSelectedTextColor="@android:color/holo_orange_light" />
+            app:tabIndicatorColor="@android:color/holo_blue_light"
+            app:tabSelectedTextColor="@android:color/holo_blue_light" />
     </FrameLayout>
 
     <LinearLayout
         android:id="@+id/ll_menu_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/holo_green_light"
+        android:background="@android:color/holo_blue_light"
         android:gravity="center"
         android:orientation="horizontal">
 
         <Button
+            android:id="@+id/btn_back_home"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
             android:text="HOME" />
     </LinearLayout>
 </LinearLayout>
