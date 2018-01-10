@@ -5,4 +5,8 @@
     android:background="@android:color/holo_blue_light"
     android:orientation="vertical">
 
+    <com.coderwjq.viewpager_recyclerview.NewRecyclerView
+        android:id="@+id/rv_news"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </LinearLayout>
