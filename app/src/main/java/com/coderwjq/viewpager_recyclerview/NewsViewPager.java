@@ -3,7 +3,6 @@ package com.coderwjq.viewpager_recyclerview;
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 
 /**
@@ -30,8 +29,6 @@ public class NewsViewPager extends ViewPager {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        Log.d(TAG, "onTouchEvent() called with: ev = [" + ev + "]");
-
         return super.onTouchEvent(ev);
     }
 }
