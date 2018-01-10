@@ -24,7 +24,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
-    private RecyclerView mRvHomePage;
+    private HomeRecyclerView mRvHomePage;
     private HomePageAdapter mHomePageAdapter;
     private TabLayout mTlNewsTitle;
     private LinearLayout mLlMenuBar;
@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
                 holder.mVpContainer.setAdapter(newsAdapter);
 
                 mTlNewsTitle.setupWithViewPager(holder.mVpContainer);
+                mTlNewsTitle.getTabAt(0).setText("文本新闻");
+                mTlNewsTitle.getTabAt(1).setText("视频新闻");
 
                 DisplayMetrics dm = new DisplayMetrics();
                 getWindowManager().getDefaultDisplay().getMetrics(dm);
