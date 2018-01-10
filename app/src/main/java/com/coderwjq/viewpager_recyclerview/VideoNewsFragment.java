@@ -15,9 +15,16 @@ import android.view.ViewGroup;
  * @data: 2018/1/10
  */
 
-public class VideoNewsFragment extends Fragment {
+public class VideoNewsFragment extends Fragment implements HomePageManager.OnModeChangeListener {
     private NewRecyclerView mRvNews;
     private SwipeRefreshLayout mSwipeToRefresh;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        HomePageManager.getInstance().attatchModeChangeListener(this);
+    }
 
     @Nullable
     @Override
@@ -45,5 +52,16 @@ public class VideoNewsFragment extends Fragment {
                 mSwipeToRefresh.setRefreshing(false);
             }
         });
+    }
+
+    @Override
+    public void refreshMode(int currentMode) {
+        if (mRvNews == null) {
+            return;
+        }
+
+        if (currentMode == HomePageManager.HOME_PAGE_MODE_NORMAL) {
+            mRvNews.scrollToPosition(0);
+        }
     }
 }

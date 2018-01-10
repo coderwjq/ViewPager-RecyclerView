@@ -26,6 +26,7 @@ public class HomeRecyclerView extends RecyclerView {
     @Override
     public boolean onInterceptTouchEvent(MotionEvent e) {
         if (HomePageManager.getInstance().isNewsMode()) {
+            // 新闻模式，不进行拦截
             return false;
         } else {
             return super.onInterceptTouchEvent(e);

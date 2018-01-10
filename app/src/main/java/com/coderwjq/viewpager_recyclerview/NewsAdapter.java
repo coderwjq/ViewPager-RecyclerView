@@ -2,10 +2,13 @@ package com.coderwjq.viewpager_recyclerview;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * @author: wangjiaqi
@@ -13,6 +16,8 @@ import android.widget.TextView;
  */
 
 public class NewsAdapter extends RecyclerView.Adapter {
+    private static final String TAG = "NewsAdapter";
+
     private Context mContext;
     private String mTitle;
 
@@ -31,6 +36,7 @@ public class NewsAdapter extends RecyclerView.Adapter {
         if (viewHolder instanceof NormalViewHolder) {
             NormalViewHolder holder = (NormalViewHolder) viewHolder;
             holder.mTvContent.setText(mTitle + ": " + position);
+
         }
     }
 
@@ -42,10 +48,19 @@ public class NewsAdapter extends RecyclerView.Adapter {
     class NormalViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView mTvContent;
+        private final LinearLayout mLlContainer;
 
         public NormalViewHolder(View itemView) {
             super(itemView);
             mTvContent = itemView.findViewById(R.id.tv_content);
+            mLlContainer = itemView.findViewById(R.id.ll_container);
+
+            mLlContainer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(mContext, mTvContent.getText().toString(), Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 }

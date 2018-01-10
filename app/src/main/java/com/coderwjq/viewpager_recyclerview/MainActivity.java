@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
             if (viewHolder instanceof NormalViewHolder) {
                 NormalViewHolder holder = (NormalViewHolder) viewHolder;
                 holder.mTvContent.setText("item: " + position);
+
             } else if (viewHolder instanceof NewsViewHolder) {
                 NewsViewHolder holder = (NewsViewHolder) viewHolder;
                 NewsAdapter newsAdapter = new NewsAdapter(getSupportFragmentManager());
@@ -137,10 +139,20 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
         class NormalViewHolder extends RecyclerView.ViewHolder {
 
             private final TextView mTvContent;
+            private final LinearLayout mLlContainer;
 
             public NormalViewHolder(View itemView) {
                 super(itemView);
                 mTvContent = itemView.findViewById(R.id.tv_content);
+                mLlContainer = itemView.findViewById(R.id.ll_container);
+
+                mLlContainer.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.d(TAG, "onClick() called with: v = [" + v + "]");
+                        Toast.makeText(MainActivity.this, mTvContent.getText().toString(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         }
 

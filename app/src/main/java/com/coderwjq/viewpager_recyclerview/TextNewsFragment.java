@@ -15,10 +15,17 @@ import android.view.ViewGroup;
  * @data: 2018/1/10
  */
 
-public class TextNewsFragment extends Fragment {
+public class TextNewsFragment extends Fragment implements HomePageManager.OnModeChangeListener {
 
     private NewRecyclerView mRvNews;
     private SwipeRefreshLayout mSwipeToRefresh;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        HomePageManager.getInstance().attatchModeChangeListener(this);
+    }
 
     @Nullable
     @Override
@@ -39,8 +46,6 @@ public class TextNewsFragment extends Fragment {
         NewsAdapter newsAdapter = new NewsAdapter(getContext(), "文字新闻");
         mRvNews.setAdapter(newsAdapter);
 
-        mRvNews.setNestedpParent((ViewGroup) mRvNews.getParent());
-
         mSwipeToRefresh = rootView.findViewById(R.id.swipe_to_refresh);
         mSwipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -50,4 +55,14 @@ public class TextNewsFragment extends Fragment {
         });
     }
 
+    @Override
+    public void refreshMode(int currentMode) {
+        if (mRvNews == null) {
+            return;
+        }
+
+        if (currentMode == HomePageManager.HOME_PAGE_MODE_NORMAL) {
+            mRvNews.scrollToPosition(0);
+        }
+    }
 }
