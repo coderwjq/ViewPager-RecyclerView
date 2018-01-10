@@ -23,6 +23,12 @@ public class NewsViewPager extends ViewPager {
     }
 
     @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+
+        return super.onInterceptTouchEvent(ev);
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent ev) {
         Log.d(TAG, "onTouchEvent() called with: ev = [" + ev + "]");
 

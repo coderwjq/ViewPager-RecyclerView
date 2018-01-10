@@ -37,58 +37,66 @@ public class NewRecyclerView extends RecyclerView {
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
-        Log.d(TAG, "onTouchEvent() called with: e = [" + e + "]");
-        boolean isHorizontalScroll = false;
-
-        switch (e.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mStartPosX = e.getX();
-                mStartPosY = e.getY();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                mCurPosX = e.getX();
-                mCurPosY = e.getY();
-
-                mDeltaPosX = mCurPosX - mStartPosX;
-                mDeltaPosY = mCurPosY - mStartPosY;
-
-                if (mDeltaPosX > mDeltaPosY) {
-                    // 水平滑动
-                    isHorizontalScroll = true;
-
-                    if (mDeltaPosX > 0) {
-                        // 向右滑动
-                        Log.i(TAG, "onTouchEvent: 向右滑动");
-                    } else {
-                        // 向左滑动
-                        Log.i(TAG, "onTouchEvent: 向左滑动");
-                    }
-                } else {
-                    // 垂直滑动
-                    isHorizontalScroll = false;
-
-                    if (mDeltaPosY > 0) {
-                        // 向下滑动
-                        Log.i(TAG, "onTouchEvent: 向下滑动");
-                    } else {
-                        // 向上滑动
-                        Log.i(TAG, "onTouchEvent: 向上滑动");
-                    }
-                }
-
-                mStartPosX = mCurPosX;
-                mStartPosY = mCurPosY;
-                break;
-            case MotionEvent.ACTION_UP:
-                break;
-            default:
-                break;
-        }
-
-        if (parent != null && HomePageManager.getInstance().isNewsMode() && !isHorizontalScroll) {
-            Log.i(TAG, "onTouchEvent: requestDisallowInterceptTouchEvent");
-            parent.requestDisallowInterceptTouchEvent(true);
-        }
+//        Log.d(TAG, "onTouchEvent() called with: e = [" + e + "]");
+//        boolean isHorizontalScroll = false;
+//
+//        switch (e.getAction()) {
+//            case MotionEvent.ACTION_DOWN:
+//                mStartPosX = e.getX();
+//                mStartPosY = e.getY();
+//                break;
+//            case MotionEvent.ACTION_MOVE:
+//                mCurPosX = e.getX();
+//                mCurPosY = e.getY();
+//
+//                mDeltaPosX = mCurPosX - mStartPosX;
+//                mDeltaPosY = mCurPosY - mStartPosY;
+//
+//                if (Math.abs(mDeltaPosX) > Math.abs(mDeltaPosY)) {
+//                    // 水平滑动
+//                    isHorizontalScroll = true;
+//
+//                    if (Math.abs(mDeltaPosX) < 25) {
+//                        return false;
+//                    }
+//
+//                    if (mDeltaPosX > 0) {
+//                        // 向右滑动
+//                        Log.i(TAG, "onTouchEvent: 向右滑动");
+//                    } else {
+//                        // 向左滑动
+//                        Log.i(TAG, "onTouchEvent: 向左滑动");
+//                    }
+//                } else {
+//                    // 垂直滑动
+//                    isHorizontalScroll = false;
+//
+//                    if (Math.abs(mDeltaPosY) < 25) {
+//                        return false;
+//                    }
+//
+//                    if (mDeltaPosY > 0) {
+//                        // 向下滑动
+//                        Log.i(TAG, "onTouchEvent: 向下滑动");
+//                    } else {
+//                        // 向上滑动
+//                        Log.i(TAG, "onTouchEvent: 向上滑动");
+//                    }
+//                }
+//
+//                mStartPosX = mCurPosX;
+//                mStartPosY = mCurPosY;
+//                break;
+//            case MotionEvent.ACTION_UP:
+//                break;
+//            default:
+//                break;
+//        }
+//
+//        if (parent != null && HomePageManager.getInstance().isNewsMode() && !isHorizontalScroll) {
+//            Log.i(TAG, "onTouchEvent: requestDisallowInterceptTouchEvent");
+////            parent.requestDisallowInterceptTouchEvent(true);
+//        }
 
         return super.onTouchEvent(e);
     }
