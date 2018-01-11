@@ -92,24 +92,14 @@ public class HomeRecyclerView extends RecyclerView {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent e) {
-        Log.d(TAG, "onTouchEvent() called with: e = [" + e + "]");
-
-        if (HomePageManager.getInstance().isNewsMode()) {
-            // 新闻模式，不做处理
-            return false;
-        } else {
-            return super.onTouchEvent(e);
-        }
-    }
-
-    @Override
     public void onScrolled(int dx, int dy) {
         super.onScrolled(dx, dy);
 
         if (!canScrollVertically(1)) {
             Log.i(TAG, "onScrolled: 设置当前为新闻模式");
             HomePageManager.getInstance().setNewsMode();
+        } else {
+            HomePageManager.getInstance().setNormalMode();
         }
     }
 }
