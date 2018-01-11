@@ -100,6 +100,7 @@ public class TextNewsFragment extends Fragment implements HomePageManager.OnMode
             return;
         }
 
+        mRvNews.smoothScrollToPosition(0);
         mSwipeToRefresh.setRefreshing(true);
 
         requestNews();

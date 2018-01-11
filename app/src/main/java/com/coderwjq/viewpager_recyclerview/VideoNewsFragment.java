@@ -93,6 +93,7 @@ public class VideoNewsFragment extends Fragment implements HomePageManager.OnMod
             return;
         }
 
+        mRvNews.smoothScrollToPosition(0);
         mSwipeToRefresh.setRefreshing(true);
 
         requestNews();
