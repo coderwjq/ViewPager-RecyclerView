@@ -1,5 +1,8 @@
 package com.coderwjq.viewpager_recyclerview;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,6 +14,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * @author: wangjiaqi
@@ -22,6 +28,8 @@ public class TextNewsFragment extends Fragment implements HomePageManager.OnMode
 
     private NewRecyclerView mRvNews;
     private SwipeRefreshLayout mSwipeToRefresh;
+    private TextView mTvRefreshNotice;
+    private int mNoticeHeight;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,6 +50,17 @@ public class TextNewsFragment extends Fragment implements HomePageManager.OnMode
 
     private void initView(View rootView) {
         mRvNews = rootView.findViewById(R.id.rv_news);
+        mTvRefreshNotice = rootView.findViewById(R.id.tv_refresh_notice);
+
+        mTvRefreshNotice.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                mNoticeHeight = mTvRefreshNotice.getHeight();
+                mTvRefreshNotice.setTranslationY(-mNoticeHeight);
+
+                mTvRefreshNotice.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+            }
+        });
 
         mRvNews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         mRvNews.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
@@ -57,27 +76,7 @@ public class TextNewsFragment extends Fragment implements HomePageManager.OnMode
             public void onRefresh() {
                 Log.i(TAG, "onRefresh: 进入下拉刷新请求数据");
 
-                new Thread() {
-                    @Override
-                    public void run() {
-                        super.run();
-                        //模拟网络请求
-                        try {
-                            Thread.sleep(3000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        //在UI线程中更新UI
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (mSwipeToRefresh.isRefreshing()) {
-                                    mSwipeToRefresh.setRefreshing(false);
-                                }
-                            }
-                        });
-                    }
-                }.start();
+                requestNews();
             }
         });
 
@@ -97,18 +96,23 @@ public class TextNewsFragment extends Fragment implements HomePageManager.OnMode
     @Override
     public void refreshNews() {
         if (mSwipeToRefresh.isRefreshing()) {
+            Toast.makeText(getActivity(), "正在刷新...", Toast.LENGTH_SHORT).show();
             return;
         }
 
         mSwipeToRefresh.setRefreshing(true);
 
+        requestNews();
+    }
+
+    private void requestNews() {
         new Thread() {
             @Override
             public void run() {
                 super.run();
                 //模拟网络请求
                 try {
-                    Thread.sleep(3000);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -119,6 +123,38 @@ public class TextNewsFragment extends Fragment implements HomePageManager.OnMode
                         if (mSwipeToRefresh.isRefreshing()) {
                             mSwipeToRefresh.setRefreshing(false);
                         }
+
+                        // 刷新完成
+                        ObjectAnimator translationY = ObjectAnimator.ofFloat(mTvRefreshNotice, "translationY", -mNoticeHeight, 0);
+                        translationY.setDuration(500);
+                        translationY.addListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                super.onAnimationEnd(animation);
+                                new Thread() {
+                                    @Override
+                                    public void run() {
+                                        super.run();
+                                        //模拟网络请求
+                                        try {
+                                            Thread.sleep(1000);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                ObjectAnimator translationY = ObjectAnimator.ofFloat(mTvRefreshNotice, "translationY", 0, -mNoticeHeight);
+                                                translationY.setDuration(500);
+                                                translationY.start();
+                                            }
+                                        });
+                                    }
+                                }.start();
+                            }
+                        });
+                        translationY.start();
                     }
                 });
             }
