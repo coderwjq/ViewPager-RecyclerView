@@ -135,6 +135,7 @@ public class TextNewsFragment extends Fragment implements HomePageManager.OnMode
                                 super.onAnimationStart(animation);
 
                                 isShowNoticeText = true;
+                                mSwipeToRefresh.setEnabled(false);
                             }
 
                             @Override
@@ -161,6 +162,7 @@ public class TextNewsFragment extends Fragment implements HomePageManager.OnMode
                                                     public void onAnimationEnd(Animator animation) {
                                                         super.onAnimationEnd(animation);
                                                         isShowNoticeText = false;
+                                                        mSwipeToRefresh.setEnabled(true);
                                                     }
                                                 });
                                                 translationY.start();

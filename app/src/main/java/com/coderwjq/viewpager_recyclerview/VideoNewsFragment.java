@@ -136,6 +136,7 @@ public class VideoNewsFragment extends Fragment implements HomePageManager.OnMod
                                 super.onAnimationStart(animation);
 
                                 isShowNoticeText = true;
+                                mSwipeToRefresh.setEnabled(false);
                             }
 
                             @Override
@@ -162,6 +163,7 @@ public class VideoNewsFragment extends Fragment implements HomePageManager.OnMod
                                                     public void onAnimationEnd(Animator animation) {
                                                         super.onAnimationEnd(animation);
                                                         isShowNoticeText = false;
+                                                        mSwipeToRefresh.setEnabled(true);
                                                     }
                                                 });
                                                 translationY.start();
