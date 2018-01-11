@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ public class VideoNewsFragment extends Fragment implements HomePageManager.OnMod
     private SwipeRefreshLayout mSwipeToRefresh;
     private TextView mTvRefreshNotice;
     private int mNoticeHeight;
+    private boolean isShowNoticeText;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,7 +74,14 @@ public class VideoNewsFragment extends Fragment implements HomePageManager.OnMod
         mSwipeToRefresh.setColorSchemeColors(Color.BLUE, Color.RED, Color.YELLOW);
         mSwipeToRefresh.setProgressBackgroundColorSchemeColor(Color.parseColor("#BBFFFF"));
 
-        requestNews();
+        mSwipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Log.i(TAG, "onRefresh: 进入下拉刷新请求数据");
+
+                requestNews();
+            }
+        });
     }
 
     @Override
@@ -88,7 +97,7 @@ public class VideoNewsFragment extends Fragment implements HomePageManager.OnMod
 
     @Override
     public void refreshNews() {
-        if (mSwipeToRefresh.isRefreshing()) {
+        if (mSwipeToRefresh.isRefreshing() || isShowNoticeText) {
             Toast.makeText(getActivity(), "正在刷新...", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -119,9 +128,16 @@ public class VideoNewsFragment extends Fragment implements HomePageManager.OnMod
                         }
 
                         // 刷新完成
-                        ObjectAnimator translationY = ObjectAnimator.ofFloat(mTvRefreshNotice, "translationY", -mNoticeHeight, 0);
+                        final ObjectAnimator translationY = ObjectAnimator.ofFloat(mTvRefreshNotice, "translationY", -mNoticeHeight, 0);
                         translationY.setDuration(500);
                         translationY.addListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationStart(Animator animation) {
+                                super.onAnimationStart(animation);
+
+                                isShowNoticeText = true;
+                            }
+
                             @Override
                             public void onAnimationEnd(Animator animation) {
                                 super.onAnimationEnd(animation);
@@ -141,6 +157,13 @@ public class VideoNewsFragment extends Fragment implements HomePageManager.OnMod
                                             public void run() {
                                                 ObjectAnimator translationY = ObjectAnimator.ofFloat(mTvRefreshNotice, "translationY", 0, -mNoticeHeight);
                                                 translationY.setDuration(500);
+                                                translationY.addListener(new AnimatorListenerAdapter() {
+                                                    @Override
+                                                    public void onAnimationEnd(Animator animation) {
+                                                        super.onAnimationEnd(animation);
+                                                        isShowNoticeText = false;
+                                                    }
+                                                });
                                                 translationY.start();
                                             }
                                         });

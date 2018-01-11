@@ -30,6 +30,7 @@ public class TextNewsFragment extends Fragment implements HomePageManager.OnMode
     private SwipeRefreshLayout mSwipeToRefresh;
     private TextView mTvRefreshNotice;
     private int mNoticeHeight;
+    private boolean isShowNoticeText;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -95,7 +96,7 @@ public class TextNewsFragment extends Fragment implements HomePageManager.OnMode
 
     @Override
     public void refreshNews() {
-        if (mSwipeToRefresh.isRefreshing()) {
+        if (mSwipeToRefresh.isRefreshing() || isShowNoticeText) {
             Toast.makeText(getActivity(), "正在刷新...", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -126,9 +127,16 @@ public class TextNewsFragment extends Fragment implements HomePageManager.OnMode
                         }
 
                         // 刷新完成
-                        ObjectAnimator translationY = ObjectAnimator.ofFloat(mTvRefreshNotice, "translationY", -mNoticeHeight, 0);
+                        final ObjectAnimator translationY = ObjectAnimator.ofFloat(mTvRefreshNotice, "translationY", -mNoticeHeight, 0);
                         translationY.setDuration(500);
                         translationY.addListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationStart(Animator animation) {
+                                super.onAnimationStart(animation);
+
+                                isShowNoticeText = true;
+                            }
+
                             @Override
                             public void onAnimationEnd(Animator animation) {
                                 super.onAnimationEnd(animation);
@@ -148,6 +156,13 @@ public class TextNewsFragment extends Fragment implements HomePageManager.OnMode
                                             public void run() {
                                                 ObjectAnimator translationY = ObjectAnimator.ofFloat(mTvRefreshNotice, "translationY", 0, -mNoticeHeight);
                                                 translationY.setDuration(500);
+                                                translationY.addListener(new AnimatorListenerAdapter() {
+                                                    @Override
+                                                    public void onAnimationEnd(Animator animation) {
+                                                        super.onAnimationEnd(animation);
+                                                        isShowNoticeText = false;
+                                                    }
+                                                });
                                                 translationY.start();
                                             }
                                         });

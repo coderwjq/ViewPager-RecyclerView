@@ -40,7 +40,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="#ffaa66cc"
-            android:text="FORWARD" />
+            android:text="FORWARD"
+            android:textColor="@android:color/white" />
 
         <Button
             android:id="@+id/btn_back_home"
@@ -48,6 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/holo_green_light"
-            android:text="HOME" />
+            android:text="HOME"
+            android:textColor="@android:color/white" />
     </LinearLayout>
 </LinearLayout>
