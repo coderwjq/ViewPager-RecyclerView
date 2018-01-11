@@ -1,11 +1,13 @@
 package com.coderwjq.viewpager_recyclerview;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +17,9 @@ import android.view.ViewGroup;
  * @data: 2018/1/10
  */
 
-public class VideoNewsFragment extends Fragment implements HomePageManager.OnModeChangeListener {
+public class VideoNewsFragment extends Fragment implements HomePageManager.OnModeChangeListener, HomePageManager.OnRefreshClickListener {
+    private static final String TAG = "VideoNewsFragment";
+
     private NewRecyclerView mRvNews;
     private SwipeRefreshLayout mSwipeToRefresh;
 
@@ -46,10 +50,35 @@ public class VideoNewsFragment extends Fragment implements HomePageManager.OnMod
         mRvNews.setAdapter(newsAdapter);
 
         mSwipeToRefresh = rootView.findViewById(R.id.swipe_to_refresh);
+        mSwipeToRefresh.setColorSchemeColors(Color.BLUE, Color.RED, Color.YELLOW);
+        mSwipeToRefresh.setProgressBackgroundColorSchemeColor(Color.parseColor("#BBFFFF"));
+
         mSwipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mSwipeToRefresh.setRefreshing(false);
+                Log.i(TAG, "onRefresh: 进入下拉刷新请求数据");
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        super.run();
+                        //模拟网络请求
+                        try {
+                            Thread.sleep(3000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        //在UI线程中更新UI
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mSwipeToRefresh.isRefreshing()) {
+                                    mSwipeToRefresh.setRefreshing(false);
+                                }
+                            }
+                        });
+                    }
+                }.start();
             }
         });
     }
@@ -63,5 +92,36 @@ public class VideoNewsFragment extends Fragment implements HomePageManager.OnMod
         if (currentMode == HomePageManager.HOME_PAGE_MODE_NORMAL) {
             mRvNews.scrollToPosition(0);
         }
+    }
+
+    @Override
+    public void refreshNews() {
+        if (mSwipeToRefresh.isRefreshing()) {
+            return;
+        }
+
+        mSwipeToRefresh.setRefreshing(true);
+
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                //模拟网络请求
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                //在UI线程中更新UI
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mSwipeToRefresh.isRefreshing()) {
+                            mSwipeToRefresh.setRefreshing(false);
+                        }
+                    }
+                });
+            }
+        }.start();
     }
 }

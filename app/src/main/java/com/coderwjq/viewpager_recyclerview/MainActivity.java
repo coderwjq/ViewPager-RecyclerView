@@ -1,11 +1,13 @@
 package com.coderwjq.viewpager_recyclerview;
 
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
         }
     };
     private int mBottomViewPagerHeight;
+    private Button mBtnForwardOrRefresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
         mTlNewsTitle = findViewById(R.id.tl_news_title);
         mLlMenuBar = findViewById(R.id.ll_menu_bar);
         mBtnBackHome = findViewById(R.id.btn_back_home);
+        mBtnForwardOrRefresh = findViewById(R.id.btn_forward_or_refresh);
 
         mHomePageAdapter = new HomePageAdapter();
         mLayoutManager = new SmoothScrollLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -104,12 +108,35 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
                 }
             }
         });
+        mBtnForwardOrRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (HomePageManager.getInstance().isNormalMode()) {
+                    Toast.makeText(MainActivity.this, "前进", Toast.LENGTH_SHORT).show();
+                } else {
+                    Fragment currentChannel = HomePageManager.getInstance().getCurrentChannel();
+
+                    if (currentChannel instanceof TextNewsFragment) {
+                        ((TextNewsFragment) currentChannel).refreshNews();
+                    } else if (currentChannel instanceof VideoNewsFragment) {
+                        ((VideoNewsFragment) currentChannel).refreshNews();
+                    }
+                }
+            }
+        });
 
         HomePageManager.getInstance().attatchModeChangeListener(this);
     }
 
     @Override
     public void refreshMode(int currentMode) {
+        if (currentMode == HomePageManager.HOME_PAGE_MODE_NORMAL) {
+            mBtnForwardOrRefresh.setText("FORWARD");
+            mBtnForwardOrRefresh.setBackgroundColor(Color.parseColor("#ff99cc00"));
+        } else {
+            mBtnForwardOrRefresh.setText("REFRESH");
+            mBtnForwardOrRefresh.setBackgroundColor(Color.parseColor("#ffaa66cc"));
+        }
     }
 
     class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -134,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
 
             } else if (viewHolder instanceof NewsViewHolder) {
                 NewsViewHolder holder = (NewsViewHolder) viewHolder;
-                NewsAdapter newsAdapter = new NewsAdapter(getSupportFragmentManager());
+                final NewsAdapter newsAdapter = new NewsAdapter(getSupportFragmentManager());
                 holder.mVpContainer.setAdapter(newsAdapter);
 
                 mTlNewsTitle.setupWithViewPager(holder.mVpContainer);
@@ -159,6 +186,24 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
                 ViewGroup.LayoutParams layoutParams = holder.mVpContainer.getLayoutParams();
                 layoutParams.height = mBottomViewPagerHeight;
                 holder.mVpContainer.setLayoutParams(layoutParams);
+
+                // 设置ViewPager滚动监听
+                holder.mVpContainer.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                    @Override
+                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                    }
+
+                    @Override
+                    public void onPageSelected(int position) {
+                        HomePageManager.getInstance().setCurrentChannel(newsAdapter.getItem(position));
+                    }
+
+                    @Override
+                    public void onPageScrollStateChanged(int state) {
+
+                    }
+                });
             }
         }
 
@@ -189,7 +234,6 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
                 mLlContainer.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.d(TAG, "onClick() called with: v = [" + v + "]");
                         Toast.makeText(MainActivity.this, mTvContent.getText().toString(), Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -204,6 +248,7 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
                 super(itemView);
                 mVpContainer = itemView.findViewById(R.id.vp_container);
             }
+
         }
 
         class NewsAdapter extends FragmentPagerAdapter {
@@ -213,6 +258,8 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
                 super(fm);
                 mFragments.add(new TextNewsFragment());
                 mFragments.add(new VideoNewsFragment());
+
+                HomePageManager.getInstance().setCurrentChannel(mFragments.get(0));
             }
 
             @Override

@@ -1,5 +1,8 @@
 package com.coderwjq.viewpager_recyclerview;
 
+
+import android.support.v4.app.Fragment;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +19,16 @@ public class HomePageManager {
 
     private static int mCurrentMode = HOME_PAGE_MODE_NORMAL;
     private List<OnModeChangeListener> mObservers = new ArrayList<>();
+
+    private Fragment mCurrentChannel;
+
+    public Fragment getCurrentChannel() {
+        return mCurrentChannel;
+    }
+
+    public void setCurrentChannel(Fragment currentChannel) {
+        mCurrentChannel = currentChannel;
+    }
 
     private HomePageManager() {
     }
@@ -68,5 +81,9 @@ public class HomePageManager {
 
     public interface OnModeChangeListener {
         void refreshMode(int currentMode);
+    }
+
+    public interface OnRefreshClickListener {
+        void refreshNews();
     }
 }
