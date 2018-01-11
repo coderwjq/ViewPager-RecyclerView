@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.ViewConfiguration;
 
 /**
  * @author: wangjiaqi
@@ -32,7 +33,6 @@ public class HomeRecyclerView extends RecyclerView {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent e) {
-        Log.d(TAG, "onTouchEvent() called with: e = [" + e + "]");
         boolean isHorizontalScroll = false;
 
         switch (e.getAction()) {
@@ -47,16 +47,14 @@ public class HomeRecyclerView extends RecyclerView {
                 mDeltaPosX = mCurPosX - mStartPosX;
                 mDeltaPosY = mCurPosY - mStartPosY;
 
-                if (Math.abs(mDeltaPosX) > Math.abs(mDeltaPosY)) {
+                if (Math.abs(mDeltaPosX) - Math.abs(mDeltaPosY) > ViewConfiguration.getTouchSlop()) {
                     // 水平滑动
                     isHorizontalScroll = true;
 
                     if (mDeltaPosX > 0) {
                         // 向右滑动
-                        Log.i(TAG, "onTouchEvent: 向右滑动");
                     } else {
                         // 向左滑动
-                        Log.i(TAG, "onTouchEvent: 向左滑动");
                     }
                 } else {
                     // 垂直滑动
@@ -64,10 +62,8 @@ public class HomeRecyclerView extends RecyclerView {
 
                     if (mDeltaPosY > 0) {
                         // 向下滑动
-                        Log.i(TAG, "onTouchEvent: 向下滑动");
                     } else {
                         // 向上滑动
-                        Log.i(TAG, "onTouchEvent: 向上滑动");
                     }
                 }
 

@@ -31,6 +31,36 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
     private LinearLayout mLlMenuBar;
     private Button mBtnBackHome;
     private LinearLayoutManager mLayoutManager;
+    private int mLastVisibleScrolledHeight = 0;
+    private RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+
+            if (mLayoutManager.findLastVisibleItemPosition() == mHomePageAdapter.getItemCount() - 1) {
+                mLastVisibleScrolledHeight += dy;
+
+                // 因为deltaHeight可能为负数
+                int deltaHeight = mBottomViewPagerHeight - mLastVisibleScrolledHeight;
+                if (deltaHeight < 500 && deltaHeight >= 0) {
+                    if (mTlNewsTitle.getVisibility() != View.VISIBLE) {
+                        mTlNewsTitle.setVisibility(View.VISIBLE);
+                    }
+
+                    float alpha = deltaHeight * 1.0f / 500;
+                    Log.i(TAG, "deltaHeight: " + deltaHeight + " alpha: " + alpha);
+                    mTlNewsTitle.setAlpha(1 - alpha);
+                } else if (deltaHeight > 500) {
+                    if (mTlNewsTitle.getVisibility() != View.INVISIBLE) {
+                        mTlNewsTitle.setVisibility(View.INVISIBLE);
+                    }
+                }
+            } else {
+                mLastVisibleScrolledHeight = 0;
+            }
+        }
+    };
+    private int mBottomViewPagerHeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
         mRvHomePage.setLayoutManager(mLayoutManager);
         mRvHomePage.setAdapter(mHomePageAdapter);
         mRvHomePage.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        mRvHomePage.addOnScrollListener(mOnScrollListener);
 
         mBtnBackHome.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,13 +96,6 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
 
     @Override
     public void refreshMode(int currentMode) {
-        if (currentMode == HomePageManager.HOME_PAGE_MODE_NORMAL) {
-            mTlNewsTitle.setVisibility(View.INVISIBLE);
-        } else if (currentMode == HomePageManager.HOME_PAGE_MODE_NEWS) {
-            mTlNewsTitle.setVisibility(View.VISIBLE);
-        } else {
-            // 其他状态
-        }
     }
 
     class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -115,10 +139,12 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
                 // 状态栏高度 = 屏幕高度 - 应用区域高度
                 int statusBar = dm.heightPixels - outRect1.height();
                 Log.e(TAG, "状态栏高度: " + statusBar);
+                mBottomViewPagerHeight = dm.heightPixels - mLlMenuBar.getHeight() - mTlNewsTitle.getHeight() - statusBar;
 
                 // 设置ViewPager高度
                 ViewGroup.LayoutParams layoutParams = holder.mVpContainer.getLayoutParams();
-                layoutParams.height = dm.heightPixels - mLlMenuBar.getHeight() - mTlNewsTitle.getHeight() - statusBar;
+                layoutParams.height = mBottomViewPagerHeight;
+                holder.mVpContainer.setLayoutParams(layoutParams);
             }
         }
 
