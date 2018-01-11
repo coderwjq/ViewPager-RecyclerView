@@ -100,12 +100,7 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
         mBtnBackHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HomePageManager.getInstance().setNormalMode();
-
-                if (mLayoutManager.findFirstCompletelyVisibleItemPosition() != 0) {
-                    Log.i(TAG, "smoothScrollToPosition: 0");
-                    mRvHomePage.smoothScrollToPosition(0);
-                }
+                backToNormalState();
             }
         });
         mBtnForwardOrRefresh.setOnClickListener(new View.OnClickListener() {
@@ -126,6 +121,14 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
         });
 
         HomePageManager.getInstance().attatchModeChangeListener(this);
+    }
+
+    private void backToNormalState() {
+        HomePageManager.getInstance().setNormalMode();
+
+        if (mLayoutManager.findFirstCompletelyVisibleItemPosition() != 0) {
+            mRvHomePage.smoothScrollToPosition(0);
+        }
     }
 
     @Override
@@ -271,6 +274,15 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
             public int getCount() {
                 return mFragments.size();
             }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (HomePageManager.getInstance().isNewsMode()) {
+            backToNormalState();
+        } else {
+            super.onBackPressed();
         }
     }
 }
