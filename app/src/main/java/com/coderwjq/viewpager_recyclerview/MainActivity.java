@@ -24,15 +24,27 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements HomePageManager.OnModeChangeListener {
     private static final String TAG = "MainActivity";
+    public static final int TITLE_SHOW_RANGE = 1000;
 
     private HomeRecyclerView mRvHomePage;
     private HomePageAdapter mHomePageAdapter;
     private TabLayout mTlNewsTitle;
     private LinearLayout mLlMenuBar;
     private Button mBtnBackHome;
-    private LinearLayoutManager mLayoutManager;
+    private SmoothScrollLayoutManager mLayoutManager;
     private int mLastVisibleScrolledHeight = 0;
     private RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                if (mTlNewsTitle.getVisibility() == View.VISIBLE && mLayoutManager.findLastCompletelyVisibleItemPosition() != mHomePageAdapter.getItemCount() - 1) {
+                    mLayoutManager.smoothScrollToPosition(mRvHomePage, null, mHomePageAdapter.getItemCount() - 1);
+                }
+            }
+        }
+
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
@@ -42,15 +54,15 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
 
                 // 因为deltaHeight可能为负数
                 int deltaHeight = mBottomViewPagerHeight - mLastVisibleScrolledHeight;
-                if (deltaHeight < 500 && deltaHeight >= 0) {
+                if (deltaHeight < TITLE_SHOW_RANGE && deltaHeight >= 0) {
                     if (mTlNewsTitle.getVisibility() != View.VISIBLE) {
                         mTlNewsTitle.setVisibility(View.VISIBLE);
                     }
 
-                    float alpha = deltaHeight * 1.0f / 500;
+                    float alpha = deltaHeight * 1.0f / TITLE_SHOW_RANGE;
                     Log.i(TAG, "deltaHeight: " + deltaHeight + " alpha: " + alpha);
                     mTlNewsTitle.setAlpha(1 - alpha);
-                } else if (deltaHeight > 500) {
+                } else if (deltaHeight > TITLE_SHOW_RANGE) {
                     if (mTlNewsTitle.getVisibility() != View.INVISIBLE) {
                         mTlNewsTitle.setVisibility(View.INVISIBLE);
                     }
@@ -73,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
         mBtnBackHome = findViewById(R.id.btn_back_home);
 
         mHomePageAdapter = new HomePageAdapter();
-        mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mLayoutManager = new SmoothScrollLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRvHomePage.setLayoutManager(mLayoutManager);
         mRvHomePage.setAdapter(mHomePageAdapter);
         mRvHomePage.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
