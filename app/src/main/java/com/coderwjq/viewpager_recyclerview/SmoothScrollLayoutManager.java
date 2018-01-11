@@ -22,7 +22,7 @@ public class SmoothScrollLayoutManager extends LinearLayoutManager {
                 new LinearSmoothScroller(recyclerView.getContext()) {
                     @Override
                     protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
-                        return 100f / displayMetrics.densityDpi;
+                        return 80f / displayMetrics.densityDpi;
                     }
                 };
         linearSmoothScroller.setTargetPosition(position);

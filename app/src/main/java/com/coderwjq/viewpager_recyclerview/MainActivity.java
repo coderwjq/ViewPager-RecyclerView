@@ -24,7 +24,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements HomePageManager.OnModeChangeListener {
     private static final String TAG = "MainActivity";
-    public static final int TITLE_SHOW_RANGE = 1000;
+    public static final int TITLE_SHOW_RANGE = 800;
 
     private HomeRecyclerView mRvHomePage;
     private HomePageAdapter mHomePageAdapter;
@@ -38,9 +38,11 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
 
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                if (mTlNewsTitle.getVisibility() == View.VISIBLE && mLayoutManager.findLastCompletelyVisibleItemPosition() != mHomePageAdapter.getItemCount() - 1) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE && mTlNewsTitle.getVisibility() == View.VISIBLE) {
+                if (mLayoutManager.findLastCompletelyVisibleItemPosition() != mHomePageAdapter.getItemCount() - 1) {
                     mLayoutManager.smoothScrollToPosition(mRvHomePage, null, mHomePageAdapter.getItemCount() - 1);
+                } else {
+                    mTlNewsTitle.setAlpha(1);
                 }
             }
         }
