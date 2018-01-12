@@ -1,1 +1,1 @@
-include ':app', ':lib.newscenter', ':lib.homepage'
+include ':app', ':lib.homepage'

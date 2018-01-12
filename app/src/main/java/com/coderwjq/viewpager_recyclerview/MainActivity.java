@@ -26,7 +26,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements HomePageManager.OnModeChangeListener {
     private static final String TAG = "MainActivity";
-    public static final int TITLE_SHOW_RANGE = 128;
+    public static final int TITLE_SHOW_RANGE = 300;
 
     private HomeRecyclerView mRvHomePage;
     private HomePageAdapter mHomePageAdapter;
@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
     private LinearLayout mLlMenuBar;
     private Button mBtnBackHome;
     private SmoothScrollLayoutManager mLayoutManager;
-    private int mLastVisibleScrolledHeight = 0;
     private RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -53,25 +52,16 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
 
-            if (mLayoutManager.findLastVisibleItemPosition() == mHomePageAdapter.getItemCount() - 1) {
-                mLastVisibleScrolledHeight += dy;
-
-                // 因为deltaHeight可能为负数
-                int deltaHeight = mBottomViewPagerHeight - mLastVisibleScrolledHeight;
-                if (deltaHeight < TITLE_SHOW_RANGE && deltaHeight >= 0) {
+            View view = mLayoutManager.findViewByPosition(mHomePageAdapter.getItemCount() - 1);
+            if (view != null) {
+                Log.d(TAG, "onScrolled: y=" + view.getY());
+                if (view.getY() <= TITLE_SHOW_RANGE) {
                     mTlNewsTitle.setVisibility(View.VISIBLE);
-
-                    float alpha = deltaHeight * 1.0f / TITLE_SHOW_RANGE;
-                    mTlNewsTitle.setAlpha(1 - alpha);
-                } else if (deltaHeight > TITLE_SHOW_RANGE) {
-                    mTlNewsTitle.setVisibility(View.INVISIBLE);
+                    mTlNewsTitle.setAlpha((TITLE_SHOW_RANGE - view.getY()) / (TITLE_SHOW_RANGE - mTlNewsTitle.getHeight()));
                 } else {
-                    mTlNewsTitle.setVisibility(View.VISIBLE);
-
-                    mTlNewsTitle.setAlpha(1);
+                    mTlNewsTitle.setVisibility(View.GONE);
+                    mTlNewsTitle.setAlpha(0);
                 }
-            } else {
-                mLastVisibleScrolledHeight = 0;
             }
         }
     };
@@ -212,10 +202,6 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
                 layoutParams.height = mBottomViewPagerHeight;
                 Log.e(TAG, "ViewPager高度: " + mBottomViewPagerHeight);
                 holder.mVpContainer.setLayoutParams(layoutParams);
-
-                if (HomePageManager.getInstance().isNormalMode()) {
-                    mRvHomePage.smoothScrollToPosition(0);
-                }
             }
         }
 
@@ -294,5 +280,10 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
     }
 }

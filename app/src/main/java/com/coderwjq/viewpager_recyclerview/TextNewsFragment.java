@@ -45,15 +45,9 @@ public class TextNewsFragment extends Fragment implements HomePageManager.OnMode
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView...mSwipeToRefresh: " + mSwipeToRefresh);
         if (mRootView == null) {
-            mRootView = inflater.inflate(R.layout.fragment_news_list, container, false);
+            mRootView = inflater.inflate(R.layout.fragment_news_list, null, false);
 
             initView(mRootView);
-        }
-
-        ViewGroup parent = (ViewGroup) mRootView.getParent();
-
-        if (parent != null) {
-            parent.removeView(mRootView);
         }
 
         return mRootView;
