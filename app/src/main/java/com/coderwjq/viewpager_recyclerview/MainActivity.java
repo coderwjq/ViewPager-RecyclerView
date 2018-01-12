@@ -26,7 +26,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements HomePageManager.OnModeChangeListener {
     private static final String TAG = "MainActivity";
-    public static final int TITLE_SHOW_RANGE = 800;
+    public static final int TITLE_SHOW_RANGE = 128;
 
     private HomeRecyclerView mRvHomePage;
     private HomePageAdapter mHomePageAdapter;
@@ -59,16 +59,16 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
                 // 因为deltaHeight可能为负数
                 int deltaHeight = mBottomViewPagerHeight - mLastVisibleScrolledHeight;
                 if (deltaHeight < TITLE_SHOW_RANGE && deltaHeight >= 0) {
-                    if (mTlNewsTitle.getVisibility() != View.VISIBLE) {
-                        mTlNewsTitle.setVisibility(View.VISIBLE);
-                    }
+                    mTlNewsTitle.setVisibility(View.VISIBLE);
 
                     float alpha = deltaHeight * 1.0f / TITLE_SHOW_RANGE;
                     mTlNewsTitle.setAlpha(1 - alpha);
                 } else if (deltaHeight > TITLE_SHOW_RANGE) {
-                    if (mTlNewsTitle.getVisibility() != View.INVISIBLE) {
-                        mTlNewsTitle.setVisibility(View.INVISIBLE);
-                    }
+                    mTlNewsTitle.setVisibility(View.INVISIBLE);
+                } else {
+                    mTlNewsTitle.setVisibility(View.VISIBLE);
+
+                    mTlNewsTitle.setAlpha(1);
                 }
             } else {
                 mLastVisibleScrolledHeight = 0;
@@ -83,7 +83,8 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mRvHomePage = findViewById(R.id.rv_home_page);
+        HomePageManager.getInstance().attatchModeChangeListener(this);
+
         mTlNewsTitle = findViewById(R.id.tl_news_title);
         mLlMenuBar = findViewById(R.id.ll_menu_bar);
         mBtnBackHome = findViewById(R.id.btn_back_home);
@@ -91,6 +92,8 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
 
         mHomePageAdapter = new HomePageAdapter();
         mLayoutManager = new SmoothScrollLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+
+        mRvHomePage = findViewById(R.id.rv_home_page);
         mRvHomePage.setLayoutManager(mLayoutManager);
         mRvHomePage.setAdapter(mHomePageAdapter);
         mRvHomePage.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
@@ -118,8 +121,6 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
                 }
             }
         });
-
-        HomePageManager.getInstance().attatchModeChangeListener(this);
     }
 
     private void backToNormalState() {
@@ -143,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
 
     class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-        public static final int HOME_PAGE_ITEM_COUNT = 30;
+        public static final int HOME_PAGE_ITEM_COUNT = 10;
         private NewsAdapter mNewsAdapter;
 
         @Override
@@ -152,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
                 // 普通item
                 return new NormalViewHolder(getLayoutInflater().inflate(R.layout.item_home_page_normal, null));
             } else {
+                Log.i(TAG, "onCreateViewHolder: 创建新闻ViewHolder");
                 return new NewsViewHolder(getLayoutInflater().inflate(R.layout.item_home_page_news, null));
             }
         }
@@ -162,6 +164,7 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
                 NormalViewHolder holder = (NormalViewHolder) viewHolder;
                 holder.mTvContent.setText("item: " + position);
             } else if (viewHolder instanceof NewsViewHolder) {
+                Log.i(TAG, "onBindViewHolder: 绑定新闻ViewHolder");
                 NewsViewHolder holder = (NewsViewHolder) viewHolder;
                 if (mNewsAdapter == null) {
                     mNewsAdapter = new NewsAdapter(getSupportFragmentManager());
@@ -193,8 +196,8 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
                 DisplayMetrics dm = new DisplayMetrics();
                 getWindowManager().getDefaultDisplay().getMetrics(dm);
                 Log.e(TAG, "屏幕高度: " + dm.heightPixels);
-                Log.e(TAG, "菜单栏高度: " + mLlMenuBar.getHeight());
-                Log.e(TAG, "TabLayout高度: " + mTlNewsTitle.getHeight());
+                Log.e(TAG, "菜单栏高度: " + mLlMenuBar.getMeasuredHeight());
+                Log.e(TAG, "TabLayout高度: " + mTlNewsTitle.getMeasuredHeight());
 
                 //应用区域
                 Rect outRect1 = new Rect();
@@ -202,12 +205,17 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
                 // 状态栏高度 = 屏幕高度 - 应用区域高度
                 int statusBar = dm.heightPixels - outRect1.height();
                 Log.e(TAG, "状态栏高度: " + statusBar);
-                mBottomViewPagerHeight = dm.heightPixels - mLlMenuBar.getHeight() - mTlNewsTitle.getHeight() - statusBar;
+                mBottomViewPagerHeight = dm.heightPixels - mLlMenuBar.getMeasuredHeight() - mTlNewsTitle.getMeasuredHeight() - statusBar;
 
                 // 设置ViewPager高度
                 ViewGroup.LayoutParams layoutParams = holder.mVpContainer.getLayoutParams();
                 layoutParams.height = mBottomViewPagerHeight;
+                Log.e(TAG, "ViewPager高度: " + mBottomViewPagerHeight);
                 holder.mVpContainer.setLayoutParams(layoutParams);
+
+                if (HomePageManager.getInstance().isNormalMode()) {
+                    mRvHomePage.smoothScrollToPosition(0);
+                }
             }
         }
 
