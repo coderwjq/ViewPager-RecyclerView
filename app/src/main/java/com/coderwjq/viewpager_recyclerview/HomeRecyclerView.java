@@ -23,10 +23,6 @@ public class HomeRecyclerView extends RecyclerView {
     private float mDeltaPosX;
     private float mDeltaPosY;
 
-    public HomeRecyclerView(Context context) {
-        super(context);
-    }
-
     public HomeRecyclerView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
 

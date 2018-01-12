@@ -1,5 +1,6 @@
 package com.coderwjq.viewpager_recyclerview;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -111,6 +112,9 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
                 }
             }
         });
+
+        mBtnBackHome.setFocusableInTouchMode(true);
+        mBtnBackHome.requestFocus();
     }
 
     private void backToNormalState() {
@@ -282,8 +286,9 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
         }
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
+        // do nothing...
     }
 }
