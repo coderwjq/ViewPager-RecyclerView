@@ -31,6 +31,7 @@ public class VideoNewsFragment extends Fragment implements HomePageManager.OnMod
     private TextView mTvRefreshNotice;
     private int mNoticeHeight;
     private boolean isShowNoticeText;
+    private View mRootView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,11 +43,13 @@ public class VideoNewsFragment extends Fragment implements HomePageManager.OnMod
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_news_list, null);
+        if (mRootView == null) {
+            mRootView = inflater.inflate(R.layout.fragment_news_list, null);
 
-        initView(rootView);
+            initView(mRootView);
+        }
 
-        return rootView;
+        return mRootView;
     }
 
 

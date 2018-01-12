@@ -31,6 +31,7 @@ public class TextNewsFragment extends Fragment implements HomePageManager.OnMode
     private TextView mTvRefreshNotice;
     private int mNoticeHeight;
     private boolean isShowNoticeText;
+    private View mRootView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,11 +43,20 @@ public class TextNewsFragment extends Fragment implements HomePageManager.OnMode
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_news_list, null);
+        Log.i(TAG, "onCreateView...mSwipeToRefresh: " + mSwipeToRefresh);
+        if (mRootView == null) {
+            mRootView = inflater.inflate(R.layout.fragment_news_list, container, false);
 
-        initView(rootView);
+            initView(mRootView);
+        }
 
-        return rootView;
+        ViewGroup parent = (ViewGroup) mRootView.getParent();
+
+        if (parent != null) {
+            parent.removeView(mRootView);
+        }
+
+        return mRootView;
     }
 
     private void initView(View rootView) {
@@ -84,6 +94,13 @@ public class TextNewsFragment extends Fragment implements HomePageManager.OnMode
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        Log.d(TAG, "onViewCreated() called with: view = [" + view + "]");
+    }
+
+    @Override
     public void refreshMode(int currentMode) {
         if (mRvNews == null) {
             return;
@@ -96,6 +113,7 @@ public class TextNewsFragment extends Fragment implements HomePageManager.OnMode
 
     @Override
     public void refreshNews() {
+        Log.e(TAG, "刷新新闻...mSwipeToRefresh: " + mSwipeToRefresh);
         if (mSwipeToRefresh.isRefreshing() || isShowNoticeText) {
             Toast.makeText(getActivity(), "正在刷新...", Toast.LENGTH_SHORT).show();
             return;

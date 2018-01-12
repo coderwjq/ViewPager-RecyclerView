@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
                     }
 
                     float alpha = deltaHeight * 1.0f / TITLE_SHOW_RANGE;
-                    Log.i(TAG, "deltaHeight: " + deltaHeight + " alpha: " + alpha);
                     mTlNewsTitle.setAlpha(1 - alpha);
                 } else if (deltaHeight > TITLE_SHOW_RANGE) {
                     if (mTlNewsTitle.getVisibility() != View.INVISIBLE) {
@@ -145,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
     class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         public static final int HOME_PAGE_ITEM_COUNT = 30;
+        private NewsAdapter mNewsAdapter;
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -161,15 +161,34 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
             if (viewHolder instanceof NormalViewHolder) {
                 NormalViewHolder holder = (NormalViewHolder) viewHolder;
                 holder.mTvContent.setText("item: " + position);
-
             } else if (viewHolder instanceof NewsViewHolder) {
                 NewsViewHolder holder = (NewsViewHolder) viewHolder;
-                final NewsAdapter newsAdapter = new NewsAdapter(getSupportFragmentManager());
-                holder.mVpContainer.setAdapter(newsAdapter);
+                if (mNewsAdapter == null) {
+                    mNewsAdapter = new NewsAdapter(getSupportFragmentManager());
+                }
 
+                holder.mVpContainer.setAdapter(mNewsAdapter);
                 mTlNewsTitle.setupWithViewPager(holder.mVpContainer);
                 mTlNewsTitle.getTabAt(0).setText("文本新闻");
                 mTlNewsTitle.getTabAt(1).setText("视频新闻");
+
+                // 设置ViewPager滚动监听
+                holder.mVpContainer.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                    @Override
+                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                    }
+
+                    @Override
+                    public void onPageSelected(int position) {
+                        HomePageManager.getInstance().setCurrentChannel(mNewsAdapter.getItem(position));
+                    }
+
+                    @Override
+                    public void onPageScrollStateChanged(int state) {
+
+                    }
+                });
 
                 DisplayMetrics dm = new DisplayMetrics();
                 getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -189,24 +208,6 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
                 ViewGroup.LayoutParams layoutParams = holder.mVpContainer.getLayoutParams();
                 layoutParams.height = mBottomViewPagerHeight;
                 holder.mVpContainer.setLayoutParams(layoutParams);
-
-                // 设置ViewPager滚动监听
-                holder.mVpContainer.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                    @Override
-                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-                    }
-
-                    @Override
-                    public void onPageSelected(int position) {
-                        HomePageManager.getInstance().setCurrentChannel(newsAdapter.getItem(position));
-                    }
-
-                    @Override
-                    public void onPageScrollStateChanged(int state) {
-
-                    }
-                });
             }
         }
 
@@ -259,6 +260,7 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
 
             public NewsAdapter(FragmentManager fm) {
                 super(fm);
+                Log.d(TAG, "NewsAdapter() called with: fm = [" + fm + "]");
                 mFragments.add(new TextNewsFragment());
                 mFragments.add(new VideoNewsFragment());
 

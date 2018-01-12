@@ -29,6 +29,8 @@ public class HomeRecyclerView extends RecyclerView {
 
     public HomeRecyclerView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+
+        setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
     }
 
     @Override
