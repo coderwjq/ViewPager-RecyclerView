@@ -1,6 +1,6 @@
 package com.coderwjq.viewpager_recyclerview;
 
-import android.annotation.SuppressLint;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -41,10 +41,12 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
             super.onScrollStateChanged(recyclerView, newState);
 
             if (newState == RecyclerView.SCROLL_STATE_IDLE && mTlNewsTitle.getVisibility() == View.VISIBLE) {
-                if (mLayoutManager.findLastCompletelyVisibleItemPosition() != mHomePageAdapter.getItemCount() - 1) {
-                    mLayoutManager.smoothScrollToPosition(mRvHomePage, null, mHomePageAdapter.getItemCount() - 1);
-                } else {
-                    mTlNewsTitle.setAlpha(1);
+                View view = mLayoutManager.findViewByPosition(mHomePageAdapter.getItemCount() - 1);
+                if (view != null) {
+                    if (view.getY() <= TITLE_SHOW_RANGE) {
+                        Log.i(TAG, "onScrollStateChanged: 自动吸顶");
+                        mLayoutManager.smoothScrollToPosition(mRvHomePage, null, mHomePageAdapter.getItemCount() - 1);
+                    }
                 }
             }
         }
@@ -55,13 +57,13 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
 
             View view = mLayoutManager.findViewByPosition(mHomePageAdapter.getItemCount() - 1);
             if (view != null) {
-                Log.d(TAG, "onScrolled: y=" + view.getY());
                 if (view.getY() <= TITLE_SHOW_RANGE) {
                     mTlNewsTitle.setVisibility(View.VISIBLE);
                     mTlNewsTitle.setAlpha((TITLE_SHOW_RANGE - view.getY()) / (TITLE_SHOW_RANGE - mTlNewsTitle.getHeight()));
+                    Log.i(TAG, "onScrolled: alpha" + (TITLE_SHOW_RANGE - view.getY()) / (TITLE_SHOW_RANGE - mTlNewsTitle.getHeight()));
+                    // 可能原因，ViewHolder高度没有重新计算
                 } else {
                     mTlNewsTitle.setVisibility(View.GONE);
-                    mTlNewsTitle.setAlpha(0);
                 }
             }
         }
@@ -140,6 +142,11 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
 
         public static final int HOME_PAGE_ITEM_COUNT = 10;
         private NewsAdapter mNewsAdapter;
+        private NewsViewHolder mNewsViewHolder;
+
+        public NewsViewHolder getNewsViewHolder() {
+            return mNewsViewHolder;
+        }
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -160,6 +167,9 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
             } else if (viewHolder instanceof NewsViewHolder) {
                 Log.i(TAG, "onBindViewHolder: 绑定新闻ViewHolder");
                 NewsViewHolder holder = (NewsViewHolder) viewHolder;
+
+                mNewsViewHolder = holder;
+
                 if (mNewsAdapter == null) {
                     mNewsAdapter = new NewsAdapter(getSupportFragmentManager());
                 }
@@ -187,25 +197,7 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
                     }
                 });
 
-                DisplayMetrics dm = new DisplayMetrics();
-                getWindowManager().getDefaultDisplay().getMetrics(dm);
-                Log.e(TAG, "屏幕高度: " + dm.heightPixels);
-                Log.e(TAG, "菜单栏高度: " + mLlMenuBar.getMeasuredHeight());
-                Log.e(TAG, "TabLayout高度: " + mTlNewsTitle.getMeasuredHeight());
-
-                //应用区域
-                Rect outRect1 = new Rect();
-                getWindow().getDecorView().getWindowVisibleDisplayFrame(outRect1);
-                // 状态栏高度 = 屏幕高度 - 应用区域高度
-                int statusBar = dm.heightPixels - outRect1.height();
-                Log.e(TAG, "状态栏高度: " + statusBar);
-                mBottomViewPagerHeight = dm.heightPixels - mLlMenuBar.getMeasuredHeight() - mTlNewsTitle.getMeasuredHeight() - statusBar;
-
-                // 设置ViewPager高度
-                ViewGroup.LayoutParams layoutParams = holder.mVpContainer.getLayoutParams();
-                layoutParams.height = mBottomViewPagerHeight;
-                Log.e(TAG, "ViewPager高度: " + mBottomViewPagerHeight);
-                holder.mVpContainer.setLayoutParams(layoutParams);
+                calcNewsViewHolder(mNewsViewHolder);
             }
         }
 
@@ -248,6 +240,7 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
 
             public NewsViewHolder(View itemView) {
                 super(itemView);
+                Log.i(TAG, "NewsViewHolder: 创建新闻的ViewHolder");
                 mVpContainer = itemView.findViewById(R.id.vp_container);
             }
 
@@ -286,9 +279,38 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
         }
     }
 
-    @SuppressLint("MissingSuperCall")
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        // do nothing...
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Log.i(TAG, "onConfigurationChanged: called");
+
+        calcNewsViewHolder(mHomePageAdapter.getNewsViewHolder());
+    }
+
+    private void calcNewsViewHolder(HomePageAdapter.NewsViewHolder holder) {
+        if (holder == null) {
+            Log.i(TAG, "calcNewsViewHolder: NewsViewHolder...null");
+            return;
+        }
+
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        Log.e(TAG, "屏幕高度: " + dm.heightPixels);
+        Log.e(TAG, "菜单栏高度: " + mLlMenuBar.getMeasuredHeight());
+        Log.e(TAG, "TabLayout高度: " + mTlNewsTitle.getMeasuredHeight());
+
+        //应用区域
+        Rect outRect1 = new Rect();
+        getWindow().getDecorView().getWindowVisibleDisplayFrame(outRect1);
+        // 状态栏高度 = 屏幕高度 - 应用区域高度
+        int statusBar = dm.heightPixels - outRect1.height();
+        Log.e(TAG, "状态栏高度: " + statusBar);
+        mBottomViewPagerHeight = dm.heightPixels - mLlMenuBar.getMeasuredHeight() - mTlNewsTitle.getMeasuredHeight() - statusBar;
+
+        // 设置ViewPager高度
+        ViewGroup.LayoutParams layoutParams = holder.mVpContainer.getLayoutParams();
+        layoutParams.height = mBottomViewPagerHeight;
+        Log.e(TAG, "ViewPager高度: " + mBottomViewPagerHeight);
+        holder.mVpContainer.setLayoutParams(layoutParams);
     }
 }
