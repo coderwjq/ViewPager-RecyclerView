@@ -1,8 +1,7 @@
-package com.coderwjq.viewpager_recyclerview;
+package com.coderwjq.lib.homepage.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,13 +9,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.coderwjq.lib.homepage.R;
+
 /**
  * @author: wangjiaqi
  * @data: 2018/1/10
  */
 
 public class NewsAdapter extends RecyclerView.Adapter {
-    private static final String TAG = "NewsAdapter";
+    private static final String TAG = "NewsPagerAdapter";
 
     private Context mContext;
     private String mTitle;

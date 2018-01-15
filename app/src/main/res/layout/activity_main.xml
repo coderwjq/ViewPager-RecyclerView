@@ -1,31 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.coderwjq.viewpager_recyclerview.MainActivity">
 
-    <FrameLayout
+    <com.coderwjq.lib.homepage.view.HomePageView
+        android:id="@+id/home_page_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <com.coderwjq.viewpager_recyclerview.HomeRecyclerView
-            android:id="@+id/rv_home_page"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tl_news_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            android:visibility="invisible"
-            app:tabIndicatorColor="@android:color/holo_blue_light"
-            app:tabSelectedTextColor="@android:color/holo_blue_light" />
-    </FrameLayout>
+        android:layout_weight="1" />
 
     <LinearLayout
         android:id="@+id/ll_menu_bar"

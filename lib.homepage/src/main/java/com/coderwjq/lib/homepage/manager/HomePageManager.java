@@ -1,4 +1,4 @@
-package com.coderwjq.viewpager_recyclerview;
+package com.coderwjq.lib.homepage.manager;
 
 
 import android.support.v4.app.Fragment;
@@ -19,6 +19,15 @@ public class HomePageManager {
 
     private static int mCurrentMode = HOME_PAGE_MODE_NORMAL;
     private List<OnModeChangeListener> mObservers = new ArrayList<>();
+    private int mMenuBarHeight;
+
+    public int getMenuBarHeight() {
+        return mMenuBarHeight;
+    }
+
+    public void setMenuBarHeight(int menuBarHeight) {
+        mMenuBarHeight = menuBarHeight;
+    }
 
     private Fragment mCurrentChannel;
 
@@ -86,4 +95,5 @@ public class HomePageManager {
     public interface OnRefreshClickListener {
         void refreshNews();
     }
+
 }

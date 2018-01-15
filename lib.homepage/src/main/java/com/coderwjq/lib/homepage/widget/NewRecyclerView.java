@@ -1,4 +1,4 @@
-package com.coderwjq.viewpager_recyclerview;
+package com.coderwjq.lib.homepage.widget;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
@@ -22,7 +22,7 @@ public class NewRecyclerView extends RecyclerView {
     public NewRecyclerView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
 
-        setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
+        setOverScrollMode(OVER_SCROLL_NEVER);
     }
 
     @Override

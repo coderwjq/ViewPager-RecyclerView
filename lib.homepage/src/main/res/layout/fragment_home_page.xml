@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.coderwjq.lib.homepage.widget.HomeRecyclerView
+        android:id="@+id/rv_home_page"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tl_news_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:visibility="invisible"
+        app:tabIndicatorColor="@android:color/holo_blue_light"
+        app:tabSelectedTextColor="@android:color/holo_blue_light" />
+</FrameLayout>

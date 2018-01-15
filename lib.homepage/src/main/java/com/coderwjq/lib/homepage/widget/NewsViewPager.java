@@ -1,4 +1,4 @@
-package com.coderwjq.viewpager_recyclerview;
+package com.coderwjq.lib.homepage.widget;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;
@@ -19,16 +19,5 @@ public class NewsViewPager extends ViewPager {
 
     public NewsViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
-    }
-
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-
-        return super.onInterceptTouchEvent(ev);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        return super.onTouchEvent(ev);
     }
 }

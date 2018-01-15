@@ -1,4 +1,4 @@
-package com.coderwjq.viewpager_recyclerview;
+package com.coderwjq.lib.homepage.base;
 
 import android.content.Context;
 import android.os.Bundle;

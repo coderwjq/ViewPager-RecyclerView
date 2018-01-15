@@ -1,4 +1,4 @@
-package com.coderwjq.viewpager_recyclerview;
+package com.coderwjq.lib.homepage.widget;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
@@ -7,6 +7,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
+
+import com.coderwjq.lib.homepage.manager.HomePageManager;
 
 /**
  * @author: wangjiaqi

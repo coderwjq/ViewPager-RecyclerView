@@ -1,4 +1,4 @@
-package com.coderwjq.viewpager_recyclerview;
+package com.coderwjq.lib.homepage.fragment;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -18,13 +18,18 @@ import android.view.ViewTreeObserver;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.coderwjq.lib.homepage.R;
+import com.coderwjq.lib.homepage.adapter.NewsAdapter;
+import com.coderwjq.lib.homepage.manager.HomePageManager;
+import com.coderwjq.lib.homepage.widget.NewRecyclerView;
+
 /**
  * @author: wangjiaqi
  * @data: 2018/1/10
  */
 
-public class VideoNewsFragment extends Fragment implements HomePageManager.OnModeChangeListener, HomePageManager.OnRefreshClickListener {
-    private static final String TAG = "VideoNewsFragment";
+public class TextNewsFragment extends Fragment implements HomePageManager.OnModeChangeListener, HomePageManager.OnRefreshClickListener {
+    private static final String TAG = "TextNewsFragment";
 
     private NewRecyclerView mRvNews;
     private SwipeRefreshLayout mSwipeToRefresh;
@@ -43,15 +48,15 @@ public class VideoNewsFragment extends Fragment implements HomePageManager.OnMod
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.i(TAG, "onCreateView...mSwipeToRefresh: " + mSwipeToRefresh);
         if (mRootView == null) {
-            mRootView = inflater.inflate(R.layout.fragment_news_list, null);
+            mRootView = inflater.inflate(R.layout.fragment_news_list, null, false);
 
             initView(mRootView);
         }
 
         return mRootView;
     }
-
 
     private void initView(View rootView) {
         mRvNews = rootView.findViewById(R.id.rv_news);
@@ -70,13 +75,12 @@ public class VideoNewsFragment extends Fragment implements HomePageManager.OnMod
         mRvNews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         mRvNews.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
 
-        NewsAdapter newsAdapter = new NewsAdapter(getContext(), "视频新闻");
+        NewsAdapter newsAdapter = new NewsAdapter(getContext(), "文字新闻");
         mRvNews.setAdapter(newsAdapter);
 
         mSwipeToRefresh = rootView.findViewById(R.id.swipe_to_refresh);
         mSwipeToRefresh.setColorSchemeColors(Color.BLUE, Color.RED, Color.YELLOW);
         mSwipeToRefresh.setProgressBackgroundColorSchemeColor(Color.parseColor("#BBFFFF"));
-
         mSwipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -85,6 +89,14 @@ public class VideoNewsFragment extends Fragment implements HomePageManager.OnMod
                 requestNews();
             }
         });
+
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        Log.d(TAG, "onViewCreated() called with: view = [" + view + "]");
     }
 
     @Override
@@ -100,6 +112,7 @@ public class VideoNewsFragment extends Fragment implements HomePageManager.OnMod
 
     @Override
     public void refreshNews() {
+        Log.e(TAG, "刷新新闻...mSwipeToRefresh: " + mSwipeToRefresh);
         if (mSwipeToRefresh.isRefreshing() || isShowNoticeText) {
             Toast.makeText(getActivity(), "正在刷新...", Toast.LENGTH_SHORT).show();
             return;
