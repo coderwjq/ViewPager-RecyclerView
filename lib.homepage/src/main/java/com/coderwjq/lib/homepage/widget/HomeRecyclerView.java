@@ -95,8 +95,10 @@ public class HomeRecyclerView extends RecyclerView {
             Log.i(TAG, "onScrolled: 设置当前为新闻模式");
             HomePageManager.getInstance().setNewsMode();
         } else {
-            Log.i(TAG, "onScrolled: 设置当前为普通模式");
-            HomePageManager.getInstance().setNormalMode();
+            if (!HomePageManager.getInstance().isNormalMode()) {
+                Log.i(TAG, "onScrolled: 设置当前为普通模式");
+                HomePageManager.getInstance().setNormalMode();
+            }
         }
     }
 }

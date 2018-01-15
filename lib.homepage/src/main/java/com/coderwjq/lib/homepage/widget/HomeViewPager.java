@@ -23,9 +23,10 @@ public class HomeViewPager extends ViewPager {
     private float mDeltaPosX;
     private float mDeltaPosY;
 
-
     public HomeViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        setOverScrollMode(ViewPager.OVER_SCROLL_NEVER);
     }
 
     /**

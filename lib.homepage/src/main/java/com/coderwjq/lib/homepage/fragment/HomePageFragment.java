@@ -9,7 +9,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +22,7 @@ import com.coderwjq.lib.homepage.base.BaseFragment;
 import com.coderwjq.lib.homepage.common.Constant;
 import com.coderwjq.lib.homepage.manager.HomePageManager;
 import com.coderwjq.lib.homepage.manager.SmoothScrollLayoutManager;
+import com.coderwjq.lib.homepage.view.EmptySearchBar;
 import com.coderwjq.lib.homepage.widget.HomeRecyclerView;
 import com.coderwjq.lib.homepage.widget.NewsViewPager;
 
@@ -43,6 +43,7 @@ public class HomePageFragment extends BaseFragment {
     private HomePageAdapter mHomePageAdapter;
 
     private int mBottomViewPagerHeight;
+    private EmptySearchBar mEmptySearchBar;
 
     @Override
     protected int getLayoutId() {
@@ -53,6 +54,8 @@ public class HomePageFragment extends BaseFragment {
     protected void initView(View rootView) {
         mTlNewsTitle = rootView.findViewById(R.id.tl_news_title);
         mRvHomePage = rootView.findViewById(R.id.rv_home_page);
+
+        mEmptySearchBar = new EmptySearchBar(mContext);
 
         mHomePageAdapter = new HomePageAdapter();
         mLayoutManager = new SmoothScrollLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
@@ -114,6 +117,8 @@ public class HomePageFragment extends BaseFragment {
             if (viewType == 0) {
                 // 普通item
                 return new NormalViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_home_page_normal, null));
+            } else if (viewType == 2) {
+                return new SearchBarViewHolder(mEmptySearchBar);
             } else {
                 Log.i(TAG, "onCreateViewHolder: 创建新闻ViewHolder");
                 return new NewsViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_home_page_news, null));
@@ -169,10 +174,18 @@ public class HomePageFragment extends BaseFragment {
 
         @Override
         public int getItemViewType(int position) {
-            if (position < HOME_PAGE_ITEM_COUNT - 1) {
+            if (position < HOME_PAGE_ITEM_COUNT - 1 && position != 1) {
                 return 0;
+            } else if (position == 1) {
+                return 2;
             } else {
                 return 1;
+            }
+        }
+
+        class SearchBarViewHolder extends RecyclerView.ViewHolder {
+            public SearchBarViewHolder(View itemView) {
+                super(itemView);
             }
         }
 
@@ -229,6 +242,7 @@ public class HomePageFragment extends BaseFragment {
                 return mFragments.size();
             }
         }
+
     }
 
     public void calcNewsViewHolder() {
@@ -261,4 +275,5 @@ public class HomePageFragment extends BaseFragment {
             mRvHomePage.smoothScrollToPosition(0);
         }
     }
+
 }

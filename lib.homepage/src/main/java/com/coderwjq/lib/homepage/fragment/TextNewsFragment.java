@@ -81,7 +81,6 @@ public class TextNewsFragment extends Fragment implements HomePageManager.OnMode
 
         mSwipeToRefresh = rootView.findViewById(R.id.swipe_to_refresh);
         mSwipeToRefresh.setColorSchemeColors(Color.BLUE, Color.RED, Color.YELLOW);
-        mSwipeToRefresh.setProgressBackgroundColorSchemeColor(Color.parseColor("#BBFFFF"));
         mSwipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
