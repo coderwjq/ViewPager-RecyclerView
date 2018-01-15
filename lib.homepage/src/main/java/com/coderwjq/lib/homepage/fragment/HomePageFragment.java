@@ -85,6 +85,7 @@ public class HomePageFragment extends BaseFragment {
 
             View view = mLayoutManager.findViewByPosition(mHomePageAdapter.getItemCount() - 1);
             if (view != null) {
+                Log.i(TAG, "view.getY: " + view.getY());
                 if (view.getY() <= Constant.TITLE_SHOW_RANGE) {
                     mTlNewsTitle.setVisibility(View.VISIBLE);
                     mTlNewsTitle.setAlpha((Constant.TITLE_SHOW_RANGE - view.getY()) / (Constant.TITLE_SHOW_RANGE - mTlNewsTitle.getHeight()));
@@ -92,6 +93,7 @@ public class HomePageFragment extends BaseFragment {
                     // 可能原因，ViewHolder高度没有重新计算
                 } else {
                     mTlNewsTitle.setVisibility(View.GONE);
+                    mTlNewsTitle.setAlpha(0);
                 }
             }
         }
@@ -237,20 +239,13 @@ public class HomePageFragment extends BaseFragment {
             return;
         }
 
-        DisplayMetrics dm = new DisplayMetrics();
-        mContext.getWindowManager().getDefaultDisplay().getMetrics(dm);
-        Log.e(TAG, "屏幕高度: " + dm.heightPixels);
-        int menuBarHeight = HomePageManager.getInstance().getMenuBarHeight();
-        Log.e(TAG, "菜单栏高度: " + menuBarHeight);
+        Log.e(TAG, "fragment高度: " + getView().getMeasuredHeight());
         Log.e(TAG, "TabLayout高度: " + mTlNewsTitle.getMeasuredHeight());
 
         //应用区域
         Rect outRect1 = new Rect();
         mContext.getWindow().getDecorView().getWindowVisibleDisplayFrame(outRect1);
-        // 状态栏高度 = 屏幕高度 - 应用区域高度
-        int statusBar = dm.heightPixels - outRect1.height();
-        Log.e(TAG, "状态栏高度: " + statusBar);
-        mBottomViewPagerHeight = dm.heightPixels - menuBarHeight - mTlNewsTitle.getMeasuredHeight() - statusBar;
+        mBottomViewPagerHeight = getView().getMeasuredHeight() - mTlNewsTitle.getMeasuredHeight();
 
         // 设置ViewPager高度
         ViewGroup.LayoutParams layoutParams = holder.mVpContainer.getLayoutParams();

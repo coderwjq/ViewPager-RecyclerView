@@ -1,7 +1,10 @@
 package com.coderwjq.lib.homepage.manager;
 
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
+
+import com.coderwjq.lib.homepage.common.Constant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,10 +17,7 @@ import java.util.List;
 public class HomePageManager {
     private static final String TAG = "HomePageManager";
 
-    public static final int HOME_PAGE_MODE_NORMAL = 0;
-    public static final int HOME_PAGE_MODE_NEWS = 1;
-
-    private static int mCurrentMode = HOME_PAGE_MODE_NORMAL;
+    private static int mCurrentMode = Constant.HOME_PAGE_MODE_NORMAL;
     private List<OnModeChangeListener> mObservers = new ArrayList<>();
     private int mMenuBarHeight;
 
@@ -63,21 +63,21 @@ public class HomePageManager {
     }
 
     public boolean isNormalMode() {
-        return mCurrentMode == HOME_PAGE_MODE_NORMAL;
+        return mCurrentMode == Constant.HOME_PAGE_MODE_NORMAL;
     }
 
     public boolean isNewsMode() {
-        return mCurrentMode == HOME_PAGE_MODE_NEWS;
+        return mCurrentMode == Constant.HOME_PAGE_MODE_NEWS;
     }
 
     public void setNewsMode() {
-        mCurrentMode = HOME_PAGE_MODE_NEWS;
+        mCurrentMode = Constant.HOME_PAGE_MODE_NEWS;
 
         refreshMode(mCurrentMode);
     }
 
     public void setNormalMode() {
-        mCurrentMode = HOME_PAGE_MODE_NORMAL;
+        mCurrentMode = Constant.HOME_PAGE_MODE_NORMAL;
 
         refreshMode(mCurrentMode);
     }

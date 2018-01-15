@@ -7,10 +7,12 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.coderwjq.lib.homepage.common.Constant;
 import com.coderwjq.lib.homepage.fragment.TextNewsFragment;
 import com.coderwjq.lib.homepage.fragment.VideoNewsFragment;
 import com.coderwjq.lib.homepage.manager.HomePageManager;
@@ -35,11 +37,18 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
         mLlMenuBar = findViewById(R.id.ll_menu_bar);
         mBtnBackHome = findViewById(R.id.btn_back_home);
         mBtnForwardOrRefresh = findViewById(R.id.btn_forward_or_refresh);
+
+        mLlMenuBar.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Log.i(TAG, "onGlobalLayout: " + mLlMenuBar.getMeasuredHeight());
+                HomePageManager.getInstance().setMenuBarHeight(mLlMenuBar.getMeasuredHeight());
+                mLlMenuBar.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+            }
+        });
+
         mHomePageView = findViewById(R.id.home_page_view);
         mHomePageView.setController(getSupportFragmentManager());
-
-        Log.i(TAG, "mLlMenuBarHeight: " + mLlMenuBar.getMeasuredHeight());
-        HomePageManager.getInstance().setMenuBarHeight(mLlMenuBar.getMeasuredHeight());
 
         mBtnBackHome.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
 
     @Override
     public void refreshMode(int currentMode) {
-        if (currentMode == HomePageManager.HOME_PAGE_MODE_NORMAL) {
+        if (currentMode == Constant.HOME_PAGE_MODE_NORMAL) {
             mBtnForwardOrRefresh.setText("FORWARD");
             mBtnForwardOrRefresh.setBackgroundColor(Color.parseColor("#ff99cc00"));
         } else {

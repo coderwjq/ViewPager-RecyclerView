@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.coderwjq.lib.homepage.R;
 import com.coderwjq.lib.homepage.adapter.NewsAdapter;
+import com.coderwjq.lib.homepage.common.Constant;
 import com.coderwjq.lib.homepage.manager.HomePageManager;
 import com.coderwjq.lib.homepage.widget.NewRecyclerView;
 
@@ -98,7 +99,7 @@ public class VideoNewsFragment extends Fragment implements HomePageManager.OnMod
             return;
         }
 
-        if (currentMode == HomePageManager.HOME_PAGE_MODE_NORMAL) {
+        if (currentMode == Constant.HOME_PAGE_MODE_NORMAL) {
             mRvNews.scrollToPosition(0);
         }
     }
