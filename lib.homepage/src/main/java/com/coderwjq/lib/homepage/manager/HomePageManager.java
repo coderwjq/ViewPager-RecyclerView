@@ -1,7 +1,6 @@
 package com.coderwjq.lib.homepage.manager;
 
 
-import android.content.Context;
 import android.support.v4.app.Fragment;
 
 import com.coderwjq.lib.homepage.common.Constant;
@@ -70,6 +69,10 @@ public class HomePageManager {
         return mCurrentMode == Constant.HOME_PAGE_MODE_NEWS;
     }
 
+    public boolean isSiteMode() {
+        return mCurrentMode == Constant.HOME_PAGE_MODE_WEBSITE;
+    }
+
     public void setNewsMode() {
         mCurrentMode = Constant.HOME_PAGE_MODE_NEWS;
 
@@ -78,6 +81,12 @@ public class HomePageManager {
 
     public void setNormalMode() {
         mCurrentMode = Constant.HOME_PAGE_MODE_NORMAL;
+
+        refreshMode(mCurrentMode);
+    }
+
+    public void setSiteMode() {
+        mCurrentMode = Constant.HOME_PAGE_MODE_WEBSITE;
 
         refreshMode(mCurrentMode);
     }

@@ -1,4 +1,4 @@
-package com.coderwjq.lib.homepage.widget;
+package com.coderwjq.lib.homepage.view;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;

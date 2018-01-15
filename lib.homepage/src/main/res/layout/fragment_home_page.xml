@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.coderwjq.lib.homepage.widget.HomeRecyclerView
+    <com.coderwjq.lib.homepage.view.HomeRecyclerView
         android:id="@+id/rv_home_page"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

@@ -22,7 +22,7 @@ import com.coderwjq.lib.homepage.R;
 import com.coderwjq.lib.homepage.adapter.NewsAdapter;
 import com.coderwjq.lib.homepage.common.Constant;
 import com.coderwjq.lib.homepage.manager.HomePageManager;
-import com.coderwjq.lib.homepage.widget.NewRecyclerView;
+import com.coderwjq.lib.homepage.view.NewRecyclerView;
 
 /**
  * @author: wangjiaqi

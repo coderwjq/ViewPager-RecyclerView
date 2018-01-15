@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.coderwjq.lib.homepage.base.BaseFragment;
 import com.coderwjq.lib.homepage.fragment.HomePageFragment;
+import com.coderwjq.lib.homepage.fragment.SiteManageFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ public class HomePagerAdapter extends FragmentPagerAdapter {
         super(fm);
 
         mFragments.add(new HomePageFragment());
-        mFragments.add(new HomePageFragment());
+        mFragments.add(new SiteManageFragment());
     }
 
     @Override

@@ -22,7 +22,7 @@ import com.coderwjq.lib.homepage.R;
 import com.coderwjq.lib.homepage.adapter.NewsAdapter;
 import com.coderwjq.lib.homepage.common.Constant;
 import com.coderwjq.lib.homepage.manager.HomePageManager;
-import com.coderwjq.lib.homepage.widget.NewRecyclerView;
+import com.coderwjq.lib.homepage.view.NewRecyclerView;
 
 /**
  * @author: wangjiaqi
@@ -49,7 +49,6 @@ public class TextNewsFragment extends Fragment implements HomePageManager.OnMode
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.i(TAG, "onCreateView...mSwipeToRefresh: " + mSwipeToRefresh);
         if (mRootView == null) {
             mRootView = inflater.inflate(R.layout.fragment_news_list, null, false);
 

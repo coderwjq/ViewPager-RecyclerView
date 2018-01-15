@@ -23,8 +23,8 @@ import com.coderwjq.lib.homepage.common.Constant;
 import com.coderwjq.lib.homepage.manager.HomePageManager;
 import com.coderwjq.lib.homepage.manager.SmoothScrollLayoutManager;
 import com.coderwjq.lib.homepage.view.EmptySearchBar;
-import com.coderwjq.lib.homepage.widget.HomeRecyclerView;
-import com.coderwjq.lib.homepage.widget.NewsViewPager;
+import com.coderwjq.lib.homepage.view.HomeRecyclerView;
+import com.coderwjq.lib.homepage.view.NewsViewPager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,12 +88,9 @@ public class HomePageFragment extends BaseFragment {
 
             View view = mLayoutManager.findViewByPosition(mHomePageAdapter.getItemCount() - 1);
             if (view != null) {
-                Log.i(TAG, "view.getY: " + view.getY());
                 if (view.getY() <= Constant.TITLE_SHOW_RANGE) {
                     mTlNewsTitle.setVisibility(View.VISIBLE);
                     mTlNewsTitle.setAlpha((Constant.TITLE_SHOW_RANGE - view.getY()) / (Constant.TITLE_SHOW_RANGE - mTlNewsTitle.getHeight()));
-                    Log.i(TAG, "onScrolled: alpha" + (Constant.TITLE_SHOW_RANGE - view.getY()) / (Constant.TITLE_SHOW_RANGE - mTlNewsTitle.getHeight()));
-                    // 可能原因，ViewHolder高度没有重新计算
                 } else {
                     mTlNewsTitle.setVisibility(View.GONE);
                     mTlNewsTitle.setAlpha(0);
@@ -103,8 +100,8 @@ public class HomePageFragment extends BaseFragment {
     };
 
     class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
         public static final int HOME_PAGE_ITEM_COUNT = 10;
+
         private NewsPagerAdapter mNewsPagerAdapter;
         private NewsViewHolder mNewsViewHolder;
 

@@ -2,6 +2,7 @@ package com.coderwjq.lib.homepage.fragment;
 
 import android.view.View;
 
+import com.coderwjq.lib.homepage.R;
 import com.coderwjq.lib.homepage.base.BaseFragment;
 
 /**
@@ -12,7 +13,7 @@ import com.coderwjq.lib.homepage.base.BaseFragment;
 public class SiteManageFragment extends BaseFragment {
     @Override
     protected int getLayoutId() {
-        return 0;
+        return R.layout.fragment_site_manage;
     }
 
     @Override

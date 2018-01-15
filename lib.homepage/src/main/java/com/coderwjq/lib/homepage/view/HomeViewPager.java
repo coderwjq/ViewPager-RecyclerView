@@ -1,10 +1,8 @@
-package com.coderwjq.lib.homepage.widget;
+package com.coderwjq.lib.homepage.view;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
@@ -12,11 +10,11 @@ import com.coderwjq.lib.homepage.manager.HomePageManager;
 
 /**
  * @author: wangjiaqi
- * @data: 2018/1/10
+ * @data: 2018/1/12
  */
 
-public class HomeRecyclerView extends RecyclerView {
-    private static final String TAG = "HomeRecyclerView";
+public class HomeViewPager extends ViewPager {
+    private static final String TAG = "HomeViewPager";
 
     private float mStartPosX;
     private float mCurPosX;
@@ -25,12 +23,18 @@ public class HomeRecyclerView extends RecyclerView {
     private float mDeltaPosX;
     private float mDeltaPosY;
 
-    public HomeRecyclerView(Context context, @Nullable AttributeSet attrs) {
+    public HomeViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
+        setOverScrollMode(ViewPager.OVER_SCROLL_NEVER);
     }
 
+    /**
+     * 当在普通模式下，左右滑动屏幕，进行主页切换
+     *
+     * @param e
+     * @return
+     */
     @Override
     public boolean onInterceptTouchEvent(MotionEvent e) {
         boolean isHorizontalScroll = false;
@@ -76,29 +80,12 @@ public class HomeRecyclerView extends RecyclerView {
                 break;
         }
 
-        if (HomePageManager.getInstance().isNewsMode()) {
-            // 新闻模式，不进行拦截
-            return false;
-        } else if (HomePageManager.getInstance().isNormalMode() && isHorizontalScroll) {
-            // 普通模式下水平滑动，拦截
+        if (HomePageManager.getInstance().isNormalMode() && isHorizontalScroll) {
+            // 首页模式下，水平滑动，拦截，由自己处理
             return true;
         } else {
             return super.onInterceptTouchEvent(e);
         }
-    }
 
-    @Override
-    public void onScrolled(int dx, int dy) {
-        super.onScrolled(dx, dy);
-
-        if (!canScrollVertically(1)) {
-            Log.i(TAG, "onScrolled: 设置当前为新闻模式");
-            HomePageManager.getInstance().setNewsMode();
-        } else {
-            if (!HomePageManager.getInstance().isNormalMode()) {
-                Log.i(TAG, "onScrolled: 设置当前为普通模式");
-                HomePageManager.getInstance().setNormalMode();
-            }
-        }
     }
 }
