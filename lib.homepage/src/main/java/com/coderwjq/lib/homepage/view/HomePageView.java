@@ -46,7 +46,7 @@ public class HomePageView extends FrameLayout {
             public void onPageSelected(int position) {
                 switch (position) {
                     case 0:
-                        HomePageManager.getInstance().setNormalMode();
+                        HomePageManager.getInstance().setLastMode();
                         break;
                     case 1:
                         HomePageManager.getInstance().setSiteMode();

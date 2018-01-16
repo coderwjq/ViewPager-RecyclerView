@@ -33,6 +33,8 @@ public class HomeRecyclerView extends RecyclerView {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent e) {
+        boolean interceptResult = false;
+
         boolean isHorizontalScroll = false;
 
         switch (e.getAction()) {
@@ -78,13 +80,16 @@ public class HomeRecyclerView extends RecyclerView {
 
         if (HomePageManager.getInstance().isNewsMode()) {
             // 新闻模式，不进行拦截
-            return false;
+            interceptResult = false;
         } else if (HomePageManager.getInstance().isNormalMode() && isHorizontalScroll) {
             // 普通模式下水平滑动，拦截
-            return true;
+            interceptResult = true;
         } else {
-            return super.onInterceptTouchEvent(e);
+            interceptResult = super.onInterceptTouchEvent(e);
         }
+
+        Log.i(TAG, "onInterceptTouchEvent: HomeRecyclerView..." + interceptResult);
+        return interceptResult;
     }
 
     @Override
@@ -102,31 +107,12 @@ public class HomeRecyclerView extends RecyclerView {
         }
     }
 
-    private float mStartTouchY;
-    private float mDeltaTouchY;
-    private float mTotalDeltaY;
-
     @Override
     public boolean onTouchEvent(MotionEvent e) {
-        switch (e.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mStartTouchY = e.getY();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                mDeltaTouchY = e.getY() - mStartTouchY;
-                mStartTouchY = e.getY();
-
-                mTotalDeltaY += mDeltaTouchY;
-                break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                mTotalDeltaY = 0;
-                break;
-            default:
-                break;
-        }
-
-        Log.i(TAG, "onTouchEvent...mTotalDeltaY: " + mTotalDeltaY);
+//        if (!canScrollVertically(-1)) {
+//            return false;
+//        }
+        Log.i(TAG, "onTouchEvent: HomeRecyclerView");
 
         return super.onTouchEvent(e);
     }

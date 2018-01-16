@@ -79,21 +79,31 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
 
     @Override
     public void refreshMode(int currentMode) {
-        if (currentMode == Constant.HOME_PAGE_MODE_NORMAL) {
-            mBtnForwardOrRefresh.setText("FORWARD");
-            mBtnForwardOrRefresh.setBackgroundColor(Color.parseColor("#ff99cc00"));
-        } else {
-            mBtnForwardOrRefresh.setText("REFRESH");
-            mBtnForwardOrRefresh.setBackgroundColor(Color.parseColor("#ffaa66cc"));
+        switch (currentMode) {
+            case Constant.HOME_PAGE_MODE_NORMAL:
+                mBtnForwardOrRefresh.setVisibility(View.VISIBLE);
+                mBtnForwardOrRefresh.setText("FORWARD");
+                mBtnForwardOrRefresh.setBackgroundColor(Color.parseColor("#ff99cc00"));
+                break;
+            case Constant.HOME_PAGE_MODE_NEWS:
+                mBtnForwardOrRefresh.setVisibility(View.VISIBLE);
+                mBtnForwardOrRefresh.setText("REFRESH");
+                mBtnForwardOrRefresh.setBackgroundColor(Color.parseColor("#ffaa66cc"));
+                break;
+            case Constant.HOME_PAGE_MODE_WEBSITE:
+                mBtnForwardOrRefresh.setVisibility(View.GONE);
+                break;
+            default:
+                break;
         }
     }
 
     @Override
     public void onBackPressed() {
-        if (HomePageManager.getInstance().isNewsMode()) {
-            mHomePageView.backToNormalState();
-        } else {
+        if (HomePageManager.getInstance().isNormalMode()) {
             super.onBackPressed();
+        } else {
+            mHomePageView.backToNormalState();
         }
     }
 

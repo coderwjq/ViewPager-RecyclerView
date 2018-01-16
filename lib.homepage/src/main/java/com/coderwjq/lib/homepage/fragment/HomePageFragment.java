@@ -43,7 +43,10 @@ public class HomePageFragment extends BaseFragment {
     private HomePageAdapter mHomePageAdapter;
 
     private int mBottomViewPagerHeight;
-    private EmptySearchBar mEmptySearchBar;
+
+    public HomeRecyclerView getRvHomePage() {
+        return mRvHomePage;
+    }
 
     @Override
     protected int getLayoutId() {
@@ -54,8 +57,6 @@ public class HomePageFragment extends BaseFragment {
     protected void initView(View rootView) {
         mTlNewsTitle = rootView.findViewById(R.id.tl_news_title);
         mRvHomePage = rootView.findViewById(R.id.rv_home_page);
-
-        mEmptySearchBar = new EmptySearchBar(mContext);
 
         mHomePageAdapter = new HomePageAdapter();
         mLayoutManager = new SmoothScrollLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
@@ -104,9 +105,18 @@ public class HomePageFragment extends BaseFragment {
 
         private NewsPagerAdapter mNewsPagerAdapter;
         private NewsViewHolder mNewsViewHolder;
+        private EmptySearchBar mEmptySearchBar;
+
+        public EmptySearchBar getEmptySearchBar() {
+            return mEmptySearchBar;
+        }
 
         public NewsViewHolder getNewsViewHolder() {
             return mNewsViewHolder;
+        }
+
+        public HomePageAdapter() {
+            mEmptySearchBar = new EmptySearchBar(mContext);
         }
 
         @Override
