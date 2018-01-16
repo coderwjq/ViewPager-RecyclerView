@@ -81,11 +81,11 @@ public class HomePageView extends FrameLayout {
         }
     }
 
-    public void calcNewsViewHolder() {
+    public void calcNewsViewHolder(boolean isOritationChanged) {
         Fragment fragment = mHomePagerAdapter.getItem(0);
 
         if (fragment instanceof HomePageFragment) {
-            ((HomePageFragment) fragment).calcNewsViewHolder();
+            ((HomePageFragment) fragment).calcNewsViewHolder(isOritationChanged);
         }
     }
 }

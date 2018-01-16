@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,6 +79,7 @@ public class HomePageFragment extends BaseFragment {
                     if (view.getY() <= Constant.TITLE_SHOW_RANGE) {
                         Log.i(TAG, "onScrollStateChanged: 自动吸顶");
                         mLayoutManager.smoothScrollToPosition(mRvHomePage, null, mHomePageAdapter.getItemCount() - 1);
+//                        mRvHomePage.scrollBy(0, (int) (Constant.TITLE_SHOW_RANGE - view.getY()));
                     }
                 }
             }
@@ -170,7 +172,7 @@ public class HomePageFragment extends BaseFragment {
                     }
                 });
 
-                calcNewsViewHolder();
+                calcNewsViewHolder(false);
             }
         }
 
@@ -252,7 +254,7 @@ public class HomePageFragment extends BaseFragment {
 
     }
 
-    public void calcNewsViewHolder() {
+    public void calcNewsViewHolder(boolean isOritationChanged) {
         HomePageAdapter.NewsViewHolder holder = mHomePageAdapter.getNewsViewHolder();
 
         if (holder == null) {
@@ -260,13 +262,20 @@ public class HomePageFragment extends BaseFragment {
             return;
         }
 
-        Log.e(TAG, "fragment高度: " + getView().getMeasuredHeight());
+        DisplayMetrics dm = new DisplayMetrics();
+        mContext.getWindowManager().getDefaultDisplay().getMetrics(dm);
+        Log.e(TAG, "屏幕高度: " + dm.heightPixels);
+        int menuBarHeight = HomePageManager.getInstance().getMenuBarHeight();
+        Log.e(TAG, "菜单栏高度: " + menuBarHeight);
         Log.e(TAG, "TabLayout高度: " + mTlNewsTitle.getMeasuredHeight());
 
         //应用区域
         Rect outRect1 = new Rect();
         mContext.getWindow().getDecorView().getWindowVisibleDisplayFrame(outRect1);
-        mBottomViewPagerHeight = getView().getMeasuredHeight() - mTlNewsTitle.getMeasuredHeight();
+        // 状态栏高度 = 屏幕高度 - 应用区域高度
+        int statusBar = dm.heightPixels - outRect1.height();
+        Log.e(TAG, "状态栏高度: " + statusBar);
+        mBottomViewPagerHeight = dm.heightPixels - menuBarHeight - mTlNewsTitle.getMeasuredHeight() - statusBar;
 
         // 设置ViewPager高度
         ViewGroup.LayoutParams layoutParams = holder.mVpContainer.getLayoutParams();

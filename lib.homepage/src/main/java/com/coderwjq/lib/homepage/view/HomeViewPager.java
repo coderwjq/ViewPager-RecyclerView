@@ -24,12 +24,6 @@ public class HomeViewPager extends ViewPager {
     private float mDeltaPosX;
     private float mDeltaPosY;
 
-    private HomeRecyclerView mHomeRecyclerView;
-
-    public void setHomeRecyclerView(HomeRecyclerView homeRecyclerView) {
-        mHomeRecyclerView = homeRecyclerView;
-    }
-
     public HomeViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -44,7 +38,7 @@ public class HomeViewPager extends ViewPager {
      */
     @Override
     public boolean onInterceptTouchEvent(MotionEvent e) {
-        boolean interceptResult = false;
+        boolean interceptResult;
 
         boolean isHorizontalScroll = false;
 
@@ -96,44 +90,7 @@ public class HomeViewPager extends ViewPager {
             interceptResult = super.onInterceptTouchEvent(e);
         }
 
-        Log.i(TAG, "onInterceptTouchEvent: HomeViewPager..." + interceptResult);
         return interceptResult;
     }
 
-    private float mStartTouchY;
-    private float mDeltaTouchY;
-    private float mTotalDeltaY;
-
-    @Override
-    public boolean onTouchEvent(MotionEvent e) {
-        Log.i(TAG, "onTouchEvent: HomeViewPager");
-
-        if (mHomeRecyclerView == null) {
-            return super.onTouchEvent(e);
-        }
-
-        switch (e.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mStartTouchY = e.getY();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                mDeltaTouchY = e.getY() - mStartTouchY;
-                mStartTouchY = e.getY();
-
-                if (!mHomeRecyclerView.canScrollVertically(-1)) {
-                    mTotalDeltaY += mDeltaTouchY;
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                mTotalDeltaY = 0;
-                break;
-            default:
-                break;
-        }
-
-        Log.i(TAG, "onTouchEvent...mTotalDeltaY: " + mTotalDeltaY);
-
-        return super.onTouchEvent(e);
-    }
 }

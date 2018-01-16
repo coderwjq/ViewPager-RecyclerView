@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements HomePageManager.O
         super.onConfigurationChanged(newConfig);
         Log.i(TAG, "onConfigurationChanged: called");
 
-        mHomePageView.calcNewsViewHolder();
+        mHomePageView.calcNewsViewHolder(true);
     }
 
     @Override
