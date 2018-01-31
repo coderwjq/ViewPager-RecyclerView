@@ -37,7 +37,6 @@ public class NewsAdapter extends RecyclerView.Adapter {
         if (viewHolder instanceof NormalViewHolder) {
             NormalViewHolder holder = (NormalViewHolder) viewHolder;
             holder.mTvContent.setText(mTitle + ": " + position);
-
         }
     }
 
